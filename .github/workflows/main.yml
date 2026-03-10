@@ -1,10 +1,67 @@
-- name: SonarQube Scan 
-  uses: SonarSource/sonarqube-scan-action@v5
-  env:
+name: CI/CD Pipeline
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: Test & Coverage Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+      
+      - name: Install ts-node
+        run: npm install ts-node --no-save
+
+      - name: Run tests with coverage
+        run: npm run test:coverage -- --ci --forceExit
+
+      - name: Check coverage is ≥ 80%
+        run: |
+          if [ ! -f coverage/lcov.info ]; then echo "lcov.info missing"; exit 1; fi
+          FOUND=$(grep "^LF:" coverage/lcov.info | awk -F: '{s+=$2} END{print s}')
+          HIT=$(grep "^LH:" coverage/lcov.info | awk -F: '{s+=$2} END{print s}')
+          if [ "$FOUND" -eq 0 ]; then PCT=0; else PCT=$(( HIT * 100 / FOUND )); fi
+          echo "Coverage: $PCT%"
+          [ "$PCT" -ge 80 ] || { echo "Low coverage"; exit 1; }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+  sonar:
+    name: SonarQube Scan
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://didactic-xylophone-97wq5gr46v6w36xr-9000.app.github.dev
         with:
-          # The args MUST be indented further than 'with'
           args: >
             -Dsonar.projectKey=asfasdfasfa
             -Dsonar.projectName=asfasdfasfa
@@ -15,3 +72,10 @@
             -Dsonar.test.inclusions=src/**/*.test.ts,src/**/*.test.tsx
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.typescript.tsconfigPath=tsconfig.json
+
+      - name: SonarQube Quality Gate
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://didactic-xylophone-97wq5gr46v6w36xr-9000.app.github.dev
