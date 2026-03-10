@@ -1,6 +1,6 @@
 projectKey=jest-sonarqube
-serverUrl=https://didactic-xylophone-97wq5gr46v6w36xr-9000.app.github.dev
+serverUrl=https://super-giggle-jj947pvwr657hqpqx-9000.app.github.dev
 serverVersion=10.7.0.96327
-dashboardUrl=https://didactic-xylophone-97wq5gr46v6w36xr-9000.app.github.dev/dashboard?id=jest-sonarqube
-ceTaskId=2af18a8b-3f25-4e43-a78a-9d3d0454635e
-ceTaskUrl=https://didactic-xylophone-97wq5gr46v6w36xr-9000.app.github.dev/api/ce/task?id=2af18a8b-3f25-4e43-a78a-9d3d0454635e
+dashboardUrl=https://super-giggle-jj947pvwr657hqpqx-9000.app.github.dev/dashboard?id=jest-sonarqube
+ceTaskId=a35c0a64-7331-4752-abef-4c3b0978c068
+ceTaskUrl=https://super-giggle-jj947pvwr657hqpqx-9000.app.github.dev/api/ce/task?id=a35c0a64-7331-4752-abef-4c3b0978c068
