@@ -62,7 +62,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOK }}
-          SONAR_HOST_URL: https://didactic-xylophone-97wq5gr46v6w36xr-9000.app.github.dev
+          SONAR_HOST_URL: https://super-giggle-jj947pvwr657hqpqx-9000.app.github.dev/
         with:
           args: >
             -Dsonar.projectKey=asfasdfasfa
@@ -80,7 +80,7 @@ jobs:
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOK }}
-          SONAR_HOST_URL: https://didactic-xylophone-97wq5gr46v6w36xr-9000.app.github.dev
+          SONAR_HOST_URL: https://super-giggle-jj947pvwr657hqpqx-9000.app.github.dev/
 
   # ── Step 3: Deploy (only on push to main/master) ──────────────
   deploy:
